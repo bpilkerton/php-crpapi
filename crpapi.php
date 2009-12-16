@@ -47,9 +47,7 @@ class crpData {
 		}
 	
 		return $this->data;
-		
 	}
-	
 }
 
 ?>
