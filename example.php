@@ -28,7 +28,7 @@ $crp = new crpData("candIndustry", Array("cid"=>"N00002408","cycle"=>"2010","out
 echo $crp->apikey . "<br />";
 echo $crp->output . "<br />";
 echo $crp->method . "<br />";
-echo $crp->baseurl    . "<br />";
+echo $crp->baseurl . "<br />";
 echo $crp->url    . "<br />";
 echo "<hr />";
 
