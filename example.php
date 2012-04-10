@@ -58,9 +58,9 @@ $data = $crp->get_data();
 echo "<h2>Request Cache Status</h2>";
 
 if ($crp->get_cache_status()) {
-	echo "Cache Hit";
+    echo "Cache Hit";
 } else {
-	echo "Cache Miss";
+    echo "Cache Miss";
 }
 
 echo "<hr />";
@@ -90,17 +90,17 @@ echo "<h2>Parsed Results</h2>";
 
 echo "<h3>Meta data</h3>";
 foreach ($data['response']['industries']['@attributes'] as $key=>$val) {
-	echo $key . " => " . $val . "<br />";
+    echo $key . " => " . $val . "<br />";
 }
 
 echo "<h3>Actual data</h3>";
 echo "<table><tr><th>Industry</th><th>Indivs</th><th>PACs</th><th>Total</th></tr>";
 foreach ($data['response']['industries']['industry'] as $ind) {
-	foreach ($ind as $row) {
-		echo "<tr><td>" . $row['industry_name'] . "</td><td>$" . 
-			$row['indivs'] . "</td><td>$" . $row['pacs'] . "</td><td>$" . 
-			$row['total'] . "</td></tr>";
-	}
+    foreach ($ind as $row) {
+        echo "<tr><td>" . $row['industry_name'] . "</td><td>$" . 
+            $row['indivs'] . "</td><td>$" . $row['pacs'] . "</td><td>$" . 
+            $row['total'] . "</td></tr>";
+    }
 }
 
 echo "</table>";
