@@ -19,16 +19,22 @@
 
 require_once('crpapi.php');
 
-$crp = new crpData("candIndustry", Array("cid"=>"N00002408","cycle"=>"2010","output"=>"json"));
+/**
+ * Setup the class instance with our request parameters
+**/
+
+$crp = new crp_api("candIndustry", Array("cid"=>"N00002408","cycle"=>"2012","output"=>"json"));
 
 /**
  * These variables are exposed upon instantiation
 **/
 
-echo $crp->apikey . "<br />";
+echo "<h2>Request data</h2>";
+
+echo $crp->api_key . "<br />";
 echo $crp->output . "<br />";
 echo $crp->method . "<br />";
-echo $crp->baseurl . "<br />";
+echo $crp->base_url . "<br />";
 echo $crp->url    . "<br />";
 echo "<hr />";
 
@@ -39,14 +45,55 @@ echo "<hr />";
  * default).  If set to false, a local file cache will not be used.
 **/
 
-$data = $crp->getData();
+$data = $crp->get_data();
 
-//Metadata
+/**
+ * Show the cache status.  By default, the library caches API query results in a
+ * gzipped, serialized form in a text file in the dataCache directory.  If you do 
+ * not desire file caching, call get_data(false) (see above).  The cache life can
+ * be set by altering $this->cache_time value in crpapi.php.  The default is 
+ * one day.
+**/
+
+echo "<h2>Request Cache Status</h2>";
+
+if ($crp->get_cache_status()) {
+	echo "Cache Hit";
+} else {
+	echo "Cache Miss";
+}
+
+echo "<hr />";
+
+/**
+ * Show response headers.  If not using the cache or the cache is empty an http
+ * request is made to the service. You can view the HTTP response headers with
+ * something like this.
+**/
+
+if (!$crp->get_cache_status()) {
+
+    echo "<h2>HTTP Response Headers</h2>";
+
+    foreach ($crp->response_headers as $header) {
+        echo $header . "<br />";
+    }
+
+    echo "<hr />";
+}
+
+/**
+ * Iterate over the results
+**/
+
+echo "<h2>Parsed Results</h2>";
+
+echo "<h3>Meta data</h3>";
 foreach ($data['response']['industries']['@attributes'] as $key=>$val) {
 	echo $key . " => " . $val . "<br />";
 }
 
-//Table Data
+echo "<h3>Actual data</h3>";
 echo "<table><tr><th>Industry</th><th>Indivs</th><th>PACs</th><th>Total</th></tr>";
 foreach ($data['response']['industries']['industry'] as $ind) {
 	foreach ($ind as $row) {
@@ -57,20 +104,5 @@ foreach ($data['response']['industries']['industry'] as $ind) {
 }
 
 echo "</table>";
-echo "<hr />";
-
-/**
- * Show the cache status.  By default, the library caches API query results in a
- * gzipped, serialized form in a text file in the dataCache directory.  If you do 
- * not desire file caching, call getData(false) (see above).  The cache life can
- * be set by altering $this->cacheTime value in crpapi.php.  The default is 
- * one day.
-**/
-
-if ($crp->getCacheStatus()) {
-	echo "Cache Hit";
-} else {
-	echo "Cache Miss";
-}
 
 ?>

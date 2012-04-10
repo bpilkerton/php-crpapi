@@ -8,28 +8,28 @@
  * @version 0.2
  */
 
-class crpData {
+class crp_api {
 
 	function __construct($method=NULL,$params=NULL) {
 
-		$this->apikey = "";
-		$this->baseurl = "http://api.opensecrets.org/";
+		$this->api_key = "75ac04de8fc38139e66a5156bd18a828";
+		$this->base_url = "http://api.opensecrets.org/";
 		$this->output = "json";
 		
 		//Allow output type to be overridden on object instantiation
 		$this->output = isset($params['output']) ? $params['output']: $this->output;
 		$this->method = $method;
-		self::loadParams($params);
+		self::load_params($params);
 		
-		$this->fileHash = md5($method . "," . implode(",",$params));
-		$this->cacheHash = "dataCache/" . $this->fileHash;
-		$this->cacheTime = 86400; #one day
+		$this->file_hash = md5($method . "," . implode(",",$params));
+		$this->cache_hash = "dataCache/" . $this->file_hash;
+		$this->cache_time = 86400; #one day
 		
 	}
 
-	private function loadParams($params) {
-		$this->url = $this->baseurl . "?method=" . $this->method . 
-			"&apikey=" . $this->apikey;
+	private function load_params($params) {
+		$this->url = $this->base_url . "?method=" . $this->method . 
+			"&apikey=" . $this->api_key;
 
 		foreach ($params as $key=>$val) {
 			$this->url .= "&" . $key . "=" . $val;
@@ -39,21 +39,23 @@ class crpData {
 		return;
 	}
 	
-	public function getData($useCache=true) {
+	public function get_data($use_cache=true) {
 	
-		if ($useCache and file_exists($this->cacheHash) and (time() - filectime($this->cacheHash) < $this->cacheTime)) {
+		if ($use_cache and file_exists($this->cache_hash) and (time() - filectime($this->cache_hash) < $this->cache_time)) {
 		
-			$this->cacheHit = true;
-			$file = fopen($this->cacheHash,"r");
+			$this->cache_hit = true;
+			$file = fopen($this->cache_hash,"r");
 			$this->data = stream_get_contents($file);
 			$this->data = gzuncompress($this->data);
 			$this->data = unserialize($this->data);
 			fclose($file);
+            $this->response_headers = "No http request sent, using cache";
 
 		} else {
-			$this->cacheHit = false;
+			$this->cache_hit = false;
 			$this->data = file_get_contents($this->url);
-
+            $this->response_headers = $http_response_header;
+            
 			switch ($this->output) {
 				case "json":
 					$this->data = json_decode($this->data,true);
@@ -65,8 +67,8 @@ class crpData {
 					die("Unknown output type.  Use 'json' or 'xml'");
 			}
 
-			if ($useCache) {
-				$file = fopen($this->cacheHash,"w");
+			if ($use_cache) {
+				$file = fopen($this->cache_hash,"w");
 				$store = serialize($this->data);
 				$store = gzcompress($store);
 				fwrite($file,$store);
@@ -77,9 +79,13 @@ class crpData {
 		return $this->data;
 	}
 	
-	function getCacheStatus() {
-		return $this->cacheHit;
+	function get_cache_status() {
+		return $this->cache_hit;
 	}
 
+	function get_response_headers() {
+		return $this->response_headers;
+	}
+    
 }
 ?>
