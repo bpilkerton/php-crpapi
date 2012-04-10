@@ -12,7 +12,7 @@ class crp_api {
 
 	function __construct($method=NULL,$params=NULL) {
 
-		$this->api_key = "75ac04de8fc38139e66a5156bd18a828";
+		$this->api_key = "";
 		$this->base_url = "http://api.opensecrets.org/";
 		$this->output = "json";
 		
